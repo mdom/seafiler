@@ -37,7 +37,7 @@ else
 	repo_id=$(seacurl "$baseurl/api2/default-repo/" | jq -r .repo_id)
 fi
 
-upload_link=$(seacurl "$baseurl/api2/repos/$repo_id/upload-link/" | jq -r)
+upload_link=$(seacurl "$baseurl/api2/repos/$repo_id/upload-link/" | jq -r .)
 
 for file; do
 	seacurl -F replace=1 -H "Authorization: Token $token" -F file=@"$file"  -F parent_dir=/ "$upload_link";echo
