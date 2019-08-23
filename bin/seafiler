@@ -29,9 +29,14 @@ check_config username "$username"
 check_config password "$password"
 check_config baseurl  "$baseurl"
 
-
 token=$(curl -s -d username="$username" -d password="$password" "$baseurl/api2/auth-token/" | jq -r .token)
-repo_id=$(seacurl "$baseurl/api/v2.1/upload-links/" | jq -r .[0].repo_id)
+
+if [ -n "$repository" ];then
+	repo_id=$(seacurl "$baseurl/api2/repos/?type=mine" | jq -r ".[]|select(.name|test(\"$repository\"))|.id")
+else
+	repo_id=$(seacurl "$baseurl/api2/default-repo/" | jq -r .repo_id)
+fi
+
 upload_link=$(seacurl "$baseurl/api2/repos/$repo_id/upload-link/" | jq -r)
 
 for file; do
