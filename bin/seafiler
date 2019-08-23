@@ -33,8 +33,10 @@ token=$(curl -s -d username="$username" -d password="$password" "$baseurl/api2/a
 
 if [ -n "$repository" ];then
 	repo_id=$(seacurl "$baseurl/api2/repos/?type=mine" | jq -r ".[]|select(.name|test(\"$repository\"))|.id")
+	[ -n "$repo_id" ] || die "No repository named $repository found."
 else
 	repo_id=$(seacurl "$baseurl/api2/default-repo/" | jq -r .repo_id)
+	[ -n "$repo_id" ] || die "No default repository found."
 fi
 
 upload_link=$(seacurl "$baseurl/api2/repos/$repo_id/upload-link/" | jq -r .)
